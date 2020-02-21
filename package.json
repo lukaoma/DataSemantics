@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "node server",
-    "build": "pwd && cd react-ui && yarn install && yarn build",
+    "build": "cd react-ui && yarn install && yarn build",
     "dev": "nodemon server & cd react-ui && yarn start"
   },
   "cacheDirectories": [
