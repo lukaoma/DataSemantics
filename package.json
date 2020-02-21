@@ -1,6 +1,6 @@
 {
   "scripts": {
     "start": "react-backend/app.js",
-    "build": "cd front-end && npm build"
+    "build": "cd front-end && yarn build && cd.. && cd react-backend && npm start "
   }
 }
