@@ -3,7 +3,8 @@ const path = require('path');
 const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
 const fetch = require("node-fetch");
-var convert = require('xml-js');
+const convert = require('xml-js');
+
 
 const isDev = process.env.NODE_ENV !== 'production';
 const PORT = process.env.PORT || 5000;
@@ -27,16 +28,21 @@ if (!isDev && cluster.isMaster) {
     // Priority serve any static files.
     app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
-    // Answer API requests.
-    app.get('/api', async function (req, res) {
-        res.set('Content-Type', 'application/json');
-        const url = "https://www.cs.utexas.edu/~devdatta/traffic_camera_data.xml";
-        await fetch(url).then(response => response.text())
-            .then(text => {
-                const reports = JSON.parse(convert.xml2json(text, {compact: true}));
-                res.send(createSend(reports));
-            });
-    });
+    // app.get('/api', async function (req, res) {
+    //     res.set('Content-Type', 'application/json');
+    //     const info = client.request("Patient/2e27c71e-30c8-4ceb-8c1c-5641e066c0a4");
+    //     res.send(info)
+    // });
+    // // Answer API requests.
+    // app.get('/api', async function (req, res) {
+    //     res.set('Content-Type', 'application/json');
+    //     const url = "https://www.cs.utexas.edu/~devdatta/traffic_camera_data.xml";
+    //     await fetch(url).then(response => response.text())
+    //         .then(text => {
+    //             const reports = JSON.parse(convert.xml2json(text, {compact: true}));
+    //             res.send(createSend(reports));
+    //         });
+    // });
 
     function createSend(reports) {
         const responseJson = [{
@@ -91,7 +97,7 @@ if (!isDev && cluster.isMaster) {
                 if (report[resJson.Camera_Attribute] != null) {
                     //better to do contains since has mutiple words
                     if (report[resJson.Camera_Attribute]["_text"].toLowerCase().includes(resJson.Camera_Attribute_Value.toLowerCase())) {
-                        resJson.Count += 1;
+                        resJson.Count++;
                     }
                 }
             }
@@ -104,7 +110,6 @@ if (!isDev && cluster.isMaster) {
     app.get('*', function (request, response) {
         response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
     });
-
 
     app.listen(PORT, function () {
         console.error(`Node ${isDev ? 'dev server' : 'cluster worker ' + process.pid}: listening on port ${PORT}`);

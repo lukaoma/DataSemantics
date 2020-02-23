@@ -1,23 +1,36 @@
-import React, {useRef} from 'react';
-import TableMain from './pages/TableMain';
+import React, {useEffect, useRef} from 'react';
+import * as FHIR from "fhirclient";
 
 
 export default function HomePage(props: any) {
+    const client = FHIR.client("https://r3.smarthealthit.org");
+    let info = null;
+
     let refs = useRef();
     const showTable = () => {
         let element: any = refs.current;
         element.style.visibility = "visible";
-    }
+    };
+
+    useEffect(() => {
+        client.request("Patient/2e27c71e-30c8-4ceb-8c1c-5641e066c0a4").then((r: any) => {
+            const real = JSON.stringify(r);
+            console.log(real);
+            document.getElementById("chill").innerText = real;
+        });
+    }, []);
 
     return (
         <div>
+
             <h1>Data<br/>
-                Assignment 6</h1>
+                Assignment 6 {info}</h1>
             <br/>
-            <h3 style={{color: "blue"}}>Welcome to Traffic Camera Analytics Page<br/>
-                Click <a href="##" style={{textDecoration: "underline"}} onClick={showTable}>​here​</a> to see details
-                about Traffic Cameras in Austin Metro Area.</h3>
-            <TableMain useRe={refs}/>
+            <h1 id="chill">HER</h1>
+            {/*<h3 style={{color: "blue"}}>Welcome to Traffic Camera Analytics Page<br/>*/}
+            {/*    Click <a href="##" style={{textDecoration: "underline"}} onClick={showTable}>​here​</a> to see details*/}
+            {/*    about Traffic Cameras in Austin Metro Area.</h3>*/}
+            {/*<TableMain useRe={refs}/>*/}
         </div>
     );
 }
