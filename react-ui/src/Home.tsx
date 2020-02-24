@@ -23,10 +23,9 @@ export default function HomePage(props: any) {
 
     return (
         <div>
-
-            <h1>Data<br/>
-                Assignment 6 {info}</h1>
-            <br/>
+            <h1>Data Semantics<br/>
+                <br/>
+            </h1>
             {/*<h1 id="chill">HER</h1>*/}
             <TableMain/>
             {/*<h3 style={{color: "blue"}}>Welcome to Traffic Camera Analytics Page<br/>*/}
