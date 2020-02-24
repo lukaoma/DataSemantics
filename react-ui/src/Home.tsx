@@ -1,5 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import * as FHIR from "fhirclient";
+import TableMain from "./pages/TableMain";
 
 
 export default function HomePage(props: any) {
@@ -16,7 +17,7 @@ export default function HomePage(props: any) {
         client.request("Patient/2e27c71e-30c8-4ceb-8c1c-5641e066c0a4").then((r: any) => {
             const real = JSON.stringify(r);
             console.log(real);
-            document.getElementById("chill").innerText = real;
+            //document.getElementById("chill").innerText = real;
         });
     }, []);
 
@@ -26,7 +27,8 @@ export default function HomePage(props: any) {
             <h1>Data<br/>
                 Assignment 6 {info}</h1>
             <br/>
-            <h1 id="chill">HER</h1>
+            {/*<h1 id="chill">HER</h1>*/}
+            <TableMain/>
             {/*<h3 style={{color: "blue"}}>Welcome to Traffic Camera Analytics Page<br/>*/}
             {/*    Click <a href="##" style={{textDecoration: "underline"}} onClick={showTable}>​here​</a> to see details*/}
             {/*    about Traffic Cameras in Austin Metro Area.</h3>*/}
@@ -34,4 +36,3 @@ export default function HomePage(props: any) {
         </div>
     );
 }
-
