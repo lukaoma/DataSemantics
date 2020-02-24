@@ -57,7 +57,6 @@ function createData(name: string, last: string, population: number, size: number
     return {name, last, population, size, density};
 }
 
-
 const useStyles = makeStyles({
     root: {
         width: '100%',
@@ -90,25 +89,48 @@ export default function StickyHeadTable() {
         createData('Brazil', 'BR', 210147125, 8515767),
     ]);
 
+    // function abunch(){
+    //     const all = [];
+    //     for (let count=0; count <1000; count++) {
+    //         all.push(createData('Brazil', 'BR', 210147125, 8515767))
+    //     }
+    //     return all;
+    // }
+
     const client = FHIR.client("https://r3.smarthealthit.org");
     useEffect(() => {
         client.request("/Patient", {pageLimit: 1}).then((r: any) => {
-            const real = JSON.stringify(r);
             const apiResponse: Response = r;
             console.log(apiResponse);
             //update table
-            const newRows: Data[] = [];
-            for (let person of apiResponse.entry) {
-                const firstName = person.resource.name[0].given[0];
-                const lastName = person.resource.name[0].family;
-                newRows.push(createData(firstName, lastName, -1, -1))
+            let allRows: Data[] = [];
+            if (apiResponse.entry === undefined) {
+                const lotsApi: Response[] = r;
+                for (let eachResponse of lotsApi) {
+                    allRows.push(...buildNewRows(eachResponse.entry))
+                }
+            } else {
+                allRows.push(...buildNewRows(apiResponse.entry))
             }
+            //no dupicates lol
+            // const fix = (names:Data[]) => names.filter((v,i) => names.indexOf(v) === i);
+            // const cleanData = fix(allRows);
             setRows((old) => {
-                return [...newRows]
+                return [...allRows]
             });
-            //document.getElementById("chill").innerText = real;
         });
     }, []);
+
+    function buildNewRows(listRows: Entry[]): Data[] {
+        const newRows: Data[] = [];
+        for (let person of listRows) {
+            const firstName = person.resource.name[0].given[0];
+            const lastName = person.resource.name[0].family;
+            newRows.push(createData(firstName, lastName, -1, -1))
+        }
+        return newRows;
+    }
+
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -139,7 +161,7 @@ export default function StickyHeadTable() {
                     <TableBody>
                         {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
                             return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={row.last}>
+                                <TableRow hover role="checkbox" tabIndex={-1} key={row.last + Math.random()}>
                                     {columns.map(column => {
                                         const value = row[column.id];
                                         return (
@@ -170,7 +192,7 @@ export default function StickyHeadTable() {
 export interface Response {
     resourceType?: string;
     id?: string;
-    meta?: ResponseMeta;
+    meta?: WelcomeMeta;
     type?: string;
     total?: number;
     link?: Link[];
@@ -196,6 +218,10 @@ export interface Resource {
     birthDate?: Date;
     address?: Address[];
     generalPractitioner?: GeneralPractitioner[];
+    extension?: ResourceExtension[];
+    maritalStatus?: MaritalStatus;
+    multipleBirthBoolean?: boolean;
+    communication?: Communication[];
 }
 
 export interface Address {
@@ -205,6 +231,56 @@ export interface Address {
     state?: string;
     postalCode?: string;
     country?: string;
+    extension?: AddressExtension[];
+}
+
+export interface AddressExtension {
+    url?: string;
+    extension?: ExtensionExtension[];
+}
+
+export interface ExtensionExtension {
+    url?: string;
+    valueDecimal?: number;
+}
+
+export interface Communication {
+    language?: Language;
+}
+
+export interface Language {
+    coding?: LanguageCoding[];
+}
+
+export interface LanguageCoding {
+    system?: string;
+    code?: string;
+    display?: string;
+}
+
+export interface ResourceExtension {
+    url?: string;
+    valueCodeableConcept?: ValueCodeableConcept;
+    valueAddress?: ValueAddress;
+    valueString?: string;
+    valueCode?: string;
+    valueBoolean?: boolean;
+    valueHumanName?: ValueHumanName;
+}
+
+export interface ValueAddress {
+    city?: string;
+    state?: string;
+    country?: string;
+}
+
+export interface ValueCodeableConcept {
+    coding?: LanguageCoding[];
+    text?: string;
+}
+
+export interface ValueHumanName {
+    text?: string;
 }
 
 export interface GeneralPractitioner {
@@ -213,31 +289,26 @@ export interface GeneralPractitioner {
 
 export interface Identifier {
     use?: string;
-    type?: Type;
+    type?: ValueCodeableConcept;
     system?: string;
     value?: string;
 }
 
-export interface Type {
-    coding?: Coding[];
+export interface MaritalStatus {
+    coding?: TagElement[];
     text?: string;
 }
 
-export interface Coding {
+export interface TagElement {
     system?: string;
     code?: string;
-    display?: string;
 }
 
 export interface ResourceMeta {
     versionID?: string;
     lastUpdated?: Date;
-    tag?: Tag[];
-}
-
-export interface Tag {
-    system?: string;
-    code?: string;
+    tag?: TagElement[];
+    profile?: string[];
 }
 
 export interface Name {
@@ -260,7 +331,6 @@ export interface Link {
     url?: string;
 }
 
-export interface ResponseMeta {
+export interface WelcomeMeta {
     lastUpdated?: Date;
 }
-
