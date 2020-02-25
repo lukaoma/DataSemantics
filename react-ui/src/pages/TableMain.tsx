@@ -112,7 +112,7 @@ export default function StickyHeadTable() {
             } else {
                 allRows.push(...buildNewRows(apiResponse.entry))
             }
-            //no dupicates lol
+            //no duplicates lol
             // const fix = (names:Data[]) => names.filter((v,i) => names.indexOf(v) === i);
             // const cleanData = fix(allRows);
             setRows((old) => {
@@ -161,7 +161,7 @@ export default function StickyHeadTable() {
                     <TableBody>
                         {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
                             return (
-                                <TableRow hover role="checkbox" tabIndex={-1} key={row.last + Math.random()}>
+                                <TableRow hover role="checkbox" tabIndex={-1} key={Math.random()}>
                                     {columns.map(column => {
                                         const value = row[column.id];
                                         return (
