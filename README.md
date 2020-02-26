@@ -1,81 +1,77 @@
-# React Flask Boilerplate
-This boilerplate uses React 16, Redux 4, Webpack 4, Python 2.7, PostgreSQL and Heroku. This repo is based off of [**Flask React Boilerplate**](https://github.com/alexkuz/flask-react-boilerplate), but has been refactored to support newer versions of React, Redux, and Webpack. I've also included React Router in the boilerplate to support multi-page applications.
+# flask and react deployed on heroku
+a onepage react app served by flask & sqlite/postgres db, deployed easily on heroku.
 
-## Installation
-**Prerequisites**:
+[Production ready example](https://gili-matan.herokuapp.com/)
 
-- [Pip](https://pip.pypa.io/en/latest/installing.html)
-- [PostgreSQL](http://www.postgresql.org/download/)
-- [NPM](https://docs.npmjs.com/getting-started/installing-node)
-- [Heroku](https://devcenter.heroku.com/articles/heroku-cli)
+# Usage
 
-Clone repository:
-
+### Local Development
 ```
-git clone https://github.com/jeremyletran/bbs-portal.git
-
-cd bbs-portal
+$ git clone...
+$ cd <>
 ```
 
-Install npm dependencies:
+### DB
+```
+sudo -u postgres psql postgres
+```
+### Server
 
 ```
-npm install
+$ virtualenv -p python3 venv
+$ pip install -r requirements.txt
+$ gunicorn app:app
 ```
 
-Setup python environment and install dependencies:
-
+### Client
 ```
-virtualenv venv
-
-source venv/bin/activate
-
-pip install -r requirements.txt
+$ cd client
+$ npm install
+$ chmod +x run_dev.sh
+$ ./run_dev.sh
 ```
-Copy .env.example config file to .env:
+To build client app comment out `process.env.REACT_APP_USERS_SERVICE_URL` and run : `npm run build`
 
+To check the build directory on a static server :
 ```
-cp .env.example .env
-```
-
-Start PostgreSQL service if needed. If you've never installed Postgres on your system before, I recommend using [Postgres.app](https://postgresapp.com/) (only works for MacOSX). Else, install Postgres [here](http://www.postgresql.org/download/) and run the command below.
-
-```
-pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+$ cd build
+$ python3 -m http.server
 ```
 
-Create database tables:
-
+### Deployment on heroku
+Disable flask-CORS
 ```
-heroku local initdb
+$ heroku login ...
+$ heroku create <your-app-name>
+$ heroku addons:add heroku-postgresql:hobby-dev
+$ heroku run python
+>>> import os
+>>> os.environ.get('DATABASE_URL')
 ```
-
-Finally, start local server:
-
+copy db_url to your app_config, and then:
 ```
-heroku local web
-
-open http://127.0.0.1:5000/
-```
-
-For development / hot-reloading, use:
-```
-heroku local dev
-```
-
-Before deploying to your heroku staging/production server for the first time, be sure to run:
-```
-heroku run initdb -a [YOUR-APP-NAME]
+$ heroku git:remote <your-app-name>
+$ git push heroku master
+$ heroku run python
+>>> from app import db
+>>> db.create_all()
+>>> exit()
 ```
 
-## What do we have here?
+## Resources
 
-- A basket of kittens 🐱
-- Simple Flask **API**, powered with [**Flask-RESTful**](https://flask-restful.readthedocs.org/en/0.3.3/), [**SQLAlchemy**](http://www.sqlalchemy.org/) and [**PostgreSQL**](http://www.postgresql.org/)
-- **UI**, powered with [**React**](http://facebook.github.io/react/), [**Babel**](https://babeljs.io/), and [**Webpack**](http://webpack.github.io/)
+1. [static files in flask](https://stackoverflow.com/questions/20646822/how-to-serve-static-files-in-flask)
 
-## License
+1. [python3 virtualenv](https://stackoverflow.com/questions/23842713/using-python-3-in-virtualenv)
 
-Copyright 2019, Jeremy Le-Tran &lt;me@jeremyletran.com&gt;
+1. [react-bootstrap](https://react-bootstrap.github.io/)
 
-This boilerplate is based on [**Flask React Boilerplate**](https://github.com/alexkuz/flask-react-boilerplate): MIT © [Alexander Kuznetsov](https://github.com/alexkuz)
+1. [react-scrollable-anchor](https://github.com/gabergg/react-scrollable-anchor)
+
+1. [google-maps-react](https://github.com/fullstackreact/google-maps-react)
+
+1. [Sahil Diwan - flask and postgres on heroku](http://blog.sahildiwan.com/posts/flask-and-postgresql-app-deployed-on-heroku/)
+
+1. [Setting up flask app in heroku with a database](https://gist.github.com/mayukh18/2223bc8fc152631205abd7cbf1efdd41/)
+
+1. [Testeimonials Carousel](https://codepen.io/jamy/pen/gbdWGJ)
