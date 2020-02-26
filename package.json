@@ -14,12 +14,6 @@
     "react-ui/node_modules"
   ],
   "dependencies": {
-    "@types/node": "^12.12.12",
-    "express": "^4.16.4",
-    "fhirclient": "^2.3.1",
-    "node-fetch": "^2.6.0",
-    "xml-js": "^1.6.11",
-    "xml2js": "^0.4.22"
   },
   "repository": {
     "type": "git",
