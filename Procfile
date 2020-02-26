@@ -1,1 +1,1 @@
-worker: python server/main.py
+gunicorn server/main.py:app
