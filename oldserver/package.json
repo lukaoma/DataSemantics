@@ -6,9 +6,9 @@
     "node": "12.13.1"
   },
   "scripts": {
-    "start": "node server",
-    "build": "cd react-ui && yarn install && yarn build",
-    "dev": "nodemon server & cd react-ui && yarn start"
+    "start": "node ",
+    "build": "cd ../react-ui && yarn install && yarn build",
+    "dev": "nodemon  & cd react-ui && yarn start"
   },
   "cacheDirectories": [
     "node_modules",
