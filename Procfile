@@ -1,1 +1,1 @@
-gunicorn server/main.py:app
+gunicorn app.py:app
