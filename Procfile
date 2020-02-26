@@ -1,4 +1,4 @@
 web: npm run dist && npm run gunicorn
 server: npm run gunicorn
-webpackdev: npm start
+dev: npm run dev
 initdb: python server/initdb.py
