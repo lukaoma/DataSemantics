@@ -1,8 +1,5 @@
 import React, {Component} from 'react';
-import useSheet from 'react-jss';
 import Kittens from '../components/Kittens';
-import {connect} from 'react-redux';
-import {requestKittens} from '../actions/kittens';
 
 export default class Index extends Component {
   componentDidMount() {
@@ -31,10 +28,10 @@ const STYLES = {
     color: '#660000'
   }
 };
-
-export default connect(
-    () => ({}),
-    {requestKittens}
-)(
-    useSheet(Index, STYLES)
-);
+//
+// export default connect(
+//     () => ({}),
+//     {requestKittens}
+// )(
+//     useSheet(Index, STYLES)
+// );
