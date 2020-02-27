@@ -7,5 +7,5 @@ nltk
 scikit-learn
 matplotlib
 joblib
-base64
+pybase64
 lime
