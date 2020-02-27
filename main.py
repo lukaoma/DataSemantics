@@ -32,7 +32,10 @@ def sendIT():
     return send_from_directory(filename=str(query_string), directory="staticML")
 
 
-
+@app.route('/sender')
+def sendIT():
+    query_string = str(request.query_string).replace('b\'', '').replace('\'', '')
+    return send_from_directory(filename=str(query_string), directory=app.instance_path+"staticML")
 
 
 @app.route('/sends')
