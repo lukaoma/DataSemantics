@@ -15,11 +15,9 @@ def prediction():
             model = doIT()
     except Exception as e:
         print(e, "UGH")
-    # info = request.headers.get('info')
-    # return str(predict(model, info))
         return str(e)
-    return str("no issues")
-
+    info = request.headers.get('info')
+    return str(predict(model, info))
 
 @app.route("/")
 def index():
