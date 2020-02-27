@@ -1,6 +1,8 @@
 import React, {useEffect, useRef} from 'react';
 import * as FHIR from "fhirclient";
 import TableMain from "./pages/TableMain";
+import Favicon from 'react-favicon';
+import logo from "./images/icon.png"
 
 
 export default function HomePage(props: any) {
@@ -23,6 +25,7 @@ export default function HomePage(props: any) {
 
     return (
         <div>
+            <Favicon url={logo}/>
             <h1>Data Semantics<br/>
                 <br/>
             </h1>

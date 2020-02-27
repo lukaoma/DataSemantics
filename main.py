@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 
 app = Flask(__name__, static_folder="react-ui/build/static", template_folder="react-ui/build")
 
