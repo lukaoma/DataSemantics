@@ -15,6 +15,7 @@ import numpy as np
 # !kill -9 -1
 import pandas as pd
 from nltk import word_tokenize
+nltk.download('punkt')
 import string
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.ensemble import RandomForestClassifier
