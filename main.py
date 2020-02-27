@@ -29,7 +29,11 @@ def index():
 @app.route('/send')
 def sendIT():
     query_string = str(request.query_string).replace('b\'', '').replace('\'', '')
-    return send_from_directory(filename=str(query_string), directory="./server/static")
+    return send_from_directory(filename=str(query_string), directory="staticML")
+
+
+
+
 
 @app.route('/sends')
 def sendITs():
