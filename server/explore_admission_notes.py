@@ -158,7 +158,8 @@ def forthCountVectro(df_train, df_valid):
     vect.fit(sample_text)  # matrix is stored as a sparse matrix (since you have a lot of zeros)
     X = vect.transform(sample_text)
 
-    # fit our vectorizer. This will take a while depending on your computer. from sklearn.feature_extraction.text import CountVectorizer
+    # fit our vectorizer. This will take a while depending on your computer. from sklearn.feature_extraction.text
+    # import CountVectorizer
     vect = CountVectorizer(max_features=3000, tokenizer=tokenizer_better)  # this could take a while
     vect.fit(df_train.TEXT.values)
 
@@ -309,6 +310,7 @@ def processString(fixString):
 def predict(model, note):
     note = processString(note)
     prob = model.predict_proba([note])[0, 1]
+    print(prob)
     return prob
 
 
@@ -327,7 +329,7 @@ def doIT():
     modelName = "./server/model.joblib"
     model = ""
     try:
-        # nltk.download('punkt')
+        nltk.download('punkt')
         model = load(modelName)
         # predictModTester(model)
     except Exception as e:
