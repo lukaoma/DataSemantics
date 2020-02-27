@@ -1,9 +1,6 @@
 import os
-
-from werkzeug.utils import cached_property
 from flask import Flask, render_template, request, send_from_directory
 from server.explore_admission_notes import doIT, predict
-from flask_autoindex import AutoIndex
 
 import decimal
 from flask import url_for
