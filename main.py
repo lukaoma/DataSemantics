@@ -31,6 +31,11 @@ def sendIT():
     query_string = str(request.query_string).replace('b\'', '').replace('\'', '')
     return send_from_directory(filename=str(query_string), directory="./server/static")
 
+@app.route('/sends')
+def sendITs():
+    query_string = str(request.query_string).replace('b\'', '').replace('\'', '')
+    return send_from_directory(filename=str(query_string), directory="react-ui/build/")
+
 
 @app.route("/hello")
 def hello():
