@@ -331,6 +331,7 @@ def doIT():
         # predictModTester(model)
     except Exception as e:
     	nltk.download('punkt')
+
         print("failed to Read model", e)
         model = runItAll()
         dump(model, modelName)
