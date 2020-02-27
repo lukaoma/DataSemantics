@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, send_from_directory
 from server.explore_admission_notes import doIT, predict
+from flask_autoindex import AutoIndex
+
 import decimal
 from flask import url_for
 
@@ -25,6 +27,10 @@ def prediction():
 def index():
     return render_template("index.html")
 
+# @app.route("/")
+# def search():
+#     AutoIndex(app, browse_root='/')
+
 
 @app.route('/send')
 def sendIT():
@@ -32,10 +38,10 @@ def sendIT():
     return send_from_directory(filename=str(query_string), directory="staticML")
 
 
-@app.route('/sender')
-def sendIT():
-    query_string = str(request.query_string).replace('b\'', '').replace('\'', '')
-    return send_from_directory(filename=str(query_string), directory=app.instance_path+"staticML")
+# @app.route('/sender')
+# def sendIT():
+#     query_string = str(request.query_string).replace('b\'', '').replace('\'', '')
+#     return send_from_directory(filename=str(query_string), directory=app.instance_path+"staticML")
 
 
 @app.route('/sends')
