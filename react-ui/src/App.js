@@ -4,7 +4,6 @@ import './App.css';
 import HomePage from './Home'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
 function App() {
 //   const [message, setMessage] = useState(null);
 //   const [isFetching, setIsFetching] = useState(false);
