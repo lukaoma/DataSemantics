@@ -9,3 +9,4 @@ matplotlib
 joblib
 pybase64
 lime
+Werkzeug==1.0.0
