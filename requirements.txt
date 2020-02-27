@@ -9,3 +9,4 @@ string
 matplotlib
 joblib
 base64
+lime

@@ -33,7 +33,7 @@ import base64
 
 
 def firstWork():
-    df_adm = pd.read_csv('ADMISSIONS.csv.gz')
+    df_adm = pd.read_csv('./server/ADMISSIONS.csv.gz')
 
     print("Made it passsed reading Admissions")
     # convert to dates
@@ -73,7 +73,7 @@ def firstWork():
 
 
 def secondPart(df_adm):
-    df_notes = pd.read_csv("NOTEEVENTS.csv.gz", low_memory=False)
+    df_notes = pd.read_csv("./server/NOTEEVENTS.csv.gz", low_memory=False)
     # Since the next step is to merge the notes on the admissions table, we might
     # have the assumption that there is one discharge summary per admission, but
     # we should probably check this. We can check this with an assert statement, which ends up failing.
@@ -138,7 +138,6 @@ def preprocess_text(df):
 
 def tokenizer_better(text):
     # tokenize the text by replacing punctuation and numbers with spaces and lowercase all words
-
     punc_list = string.punctuation + '0123456789'
     t = str.maketrans(dict.fromkeys(punc_list, " "))
     text = text.lower().translate(t)
@@ -308,6 +307,7 @@ def processString(fixString):
 #
 
 def predict(model, note):
+    note = processString(note)
     prob = model.predict_proba([note])[0, 1]
     return prob
 
@@ -324,7 +324,8 @@ def simpleDownloadFixes():
 
 
 def doIT():
-    modelName = "model.joblib"
+    modelName = "./server/model.joblib"
+    model = ""
     try:
         model = load(modelName)
         # predictModTester(model)
@@ -334,6 +335,3 @@ def doIT():
         dump(model, modelName)
         pass
     return model
-
-
-doIT()

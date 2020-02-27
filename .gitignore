@@ -1,3 +1,5 @@
 /server/server/
 /oldprod/
 /node_modules/
+/server/NOTEEVENTS.csv.gz
+server/ADMISSIONS.csv.gz

@@ -1,7 +1,12 @@
 from flask import Flask, render_template, send_from_directory, request
+from joblib import load
+from server.explore_admission_notes import doIT
+from server.explore_admission_notes import predict
 
 app = Flask(__name__, static_folder="react-ui/build/static", template_folder="react-ui/build")
+import sys
 
+model = None
 
 @app.route("/")
 def index():
@@ -16,12 +21,10 @@ def hello():
 @app.route("/predict")
 def prediction():
      info = request.headers.get('info')
-     return "thanks" + str(info)
-
-
+     return str(predict(model,info))
 
 
 if __name__ == "__main__":
-    print("THINGS ARE RUNNING")
+    model = doIT()
     app.run(host='0.0.0.0', port=5000, threaded=True)
     #app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
