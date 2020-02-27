@@ -327,13 +327,14 @@ def doIT():
     modelName = "./server/model.joblib"
     model = ""
     try:
+        # nltk.download('punkt')
         model = load(modelName)
         # predictModTester(model)
     except Exception as e:
-    	nltk.download('punkt')
-
-        print("failed to Read model", e)
-        model = runItAll()
-        dump(model, modelName)
+        return e
+        #
+        #         print("failed to Read model", e)
+        #         model = runItAll()
+        #         dump(model, modelName)
         pass
     return model

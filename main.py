@@ -9,15 +9,17 @@ model = None
 
 @app.route("/predict")
 def prediction():
-	try:
     global model
-    if model == None:
-    	print("MUST BUILD ML","\n\n\n\n\n\n\n\n\n")
-    	model = doIT()
-    except Exception as e
-    	print(e,"UGH")
-    info = request.headers.get('info')
-    return str(predict(model, info))
+    try:
+        if model == None:
+            print("MUST BUILD ML", "\n\n\n\n\n\n\n\n\n")
+            model = doIT()
+    except Exception as e:
+        print(e, "UGH")
+    # info = request.headers.get('info')
+    # return str(predict(model, info))
+        return e
+    return model
 
 
 @app.route("/")
