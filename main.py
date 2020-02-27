@@ -1,3 +1,4 @@
+from werkzeug.utils import cached_property
 from flask import Flask, render_template, request, send_from_directory
 from server.explore_admission_notes import doIT, predict
 from flask_autoindex import AutoIndex
@@ -23,13 +24,13 @@ def prediction():
     return str(predict(model, info))
 
 
-@app.route("/")
-def index():
-    return render_template("index.html")
-
 # @app.route("/")
-# def search():
-#     AutoIndex(app, browse_root='/')
+# def index():
+#     return render_template("index.html")
+
+
+
+AutoIndex(app, browse_root='/')
 
 
 @app.route('/send')
