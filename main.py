@@ -39,7 +39,7 @@ def sendIT():
 @app.route('/sends')
 def sendITs():
     query_string = str(request.query_string).replace('b\'', '').replace('\'', '')
-    return send_from_directory(filename=str(query_string), directory="react-ui/build/")
+    return send_from_directory(filename=str(query_string), directory="react-ui/build/static")
 
 
 @app.route('/help')
