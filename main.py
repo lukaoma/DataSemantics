@@ -1,3 +1,5 @@
+import os
+
 from werkzeug.utils import cached_property
 from flask import Flask, render_template, request, send_from_directory
 from server.explore_admission_notes import doIT, predict
@@ -24,14 +26,13 @@ def prediction():
     return str(predict(model, info))
 
 
-# @app.route("/")
-# def index():
-#     return render_template("index.html")
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-
-
-AutoIndex(app, browse_root='/')
-
+#
+# AutoIndex(app, browse_root='/')
+#
 
 @app.route('/send')
 def sendIT():
@@ -49,6 +50,11 @@ def sendIT():
 def sendITs():
     query_string = str(request.query_string).replace('b\'', '').replace('\'', '')
     return send_from_directory(filename=str(query_string), directory="react-ui/build/")
+
+
+@app.route('/help')
+def help():
+    return str(os.getcwd())
 
 
 @app.route("/hello")
