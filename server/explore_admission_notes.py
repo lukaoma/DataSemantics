@@ -329,6 +329,7 @@ def doIT():
     modelName = "./server/model.joblib"
     model = ""
     try:
+        import nltk
         nltk.download('punkt')
         model = load(modelName)
         # predictModTester(model)
