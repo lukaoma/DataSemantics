@@ -9,4 +9,3 @@ matplotlib
 joblib
 pybase64
 lime
-os
