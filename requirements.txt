@@ -10,3 +10,4 @@ joblib
 pybase64
 lime
 Flask-AutoIndex
+Werkzeug
