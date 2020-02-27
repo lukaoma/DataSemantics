@@ -22,7 +22,6 @@ from sklearn.metrics import *
 import matplotlib.pyplot as plt
 from sklearn.pipeline import make_pipeline
 import nltk
-nltk.download('punkt')
 from lime.lime_text import LimeTextExplainer
 from joblib import dump, load
 import base64
@@ -331,6 +330,7 @@ def doIT():
         model = load(modelName)
         # predictModTester(model)
     except Exception as e:
+    	nltk.download('punkt')
         print("failed to Read model", e)
         model = runItAll()
         dump(model, modelName)
