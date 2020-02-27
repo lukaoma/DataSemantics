@@ -2,9 +2,6 @@ import os
 from flask import Flask, render_template, request, send_from_directory
 from server.explore_admission_notes import doIT, predict
 
-import decimal
-from flask import url_for
-
 app = Flask(__name__, static_folder="react-ui/build/static", template_folder="react-ui/build")
 
 model = None
@@ -26,10 +23,6 @@ def prediction():
 @app.route("/")
 def index():
     return render_template("index.html")
-
-#
-# AutoIndex(app, browse_root='/')
-#
 
 @app.route('/send')
 def sendIT():
