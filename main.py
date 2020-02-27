@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request
-from server.explore_admission_notes import doIT ,predict
+from flask import Flask, render_template, request, send_from_directory
+from server.explore_admission_notes import doIT, predict
 import decimal
+from flask import url_for
+
 app = Flask(__name__, static_folder="react-ui/build/static", template_folder="react-ui/build")
 
 model = None
@@ -16,14 +18,18 @@ def prediction():
         print(e, "UGH")
         return str(e)
     info = request.headers.get('info')
-    prob = predict(model, info)
-    print(prob)
-    answer = decimal.Decimal(prob)
-    return str(answer)
+    return str(predict(model, info))
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route('/send')
+def sendIT():
+    query_string = str(request.query_string).replace('b\'', '').replace('\'', '')
+    return send_from_directory(filename=str(query_string), directory="./server/static")
 
 
 @app.route("/hello")

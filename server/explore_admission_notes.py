@@ -310,7 +310,6 @@ def processString(fixString):
 def predict(model, note):
     note = processString(note)
     prob = model.predict_proba([note])[0, 1]
-    print(prob)
     return prob
 
 
