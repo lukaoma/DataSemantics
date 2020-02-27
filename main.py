@@ -15,7 +15,7 @@ def prediction():
     	print("MUST BUILD ML","\n\n\n\n\n\n\n\n\n")
     	model = doIT()
     except Exception as e
-    	print(e)
+    	print(e,"UGH")
     info = request.headers.get('info')
     return str(predict(model, info))
 
