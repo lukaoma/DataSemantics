@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
-from server.explore_admission_notes import doIT
-from server.explore_admission_notes import predict
+from server.explore_admission_notes import doIT ,predict
 
 app = Flask(__name__, static_folder="react-ui/build/static", template_folder="react-ui/build")
 
@@ -18,8 +17,8 @@ def prediction():
         print(e, "UGH")
     # info = request.headers.get('info')
     # return str(predict(model, info))
-        return e
-    return model
+        return str(e)
+    return str("no issues")
 
 
 @app.route("/")
