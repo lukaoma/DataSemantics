@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, request
 
 app = Flask(__name__, static_folder="react-ui/build/static", template_folder="react-ui/build")
 
@@ -11,6 +11,15 @@ def index():
 @app.route("/hello")
 def hello():
     return "Hello World!!!!!!!!!!!!!!!!!!!!!!!"
+
+
+@app.route("/predict")
+def prediction():
+     info = request.headers.get('info')
+     return "thanks" + str(info)
+
+
+
 
 if __name__ == "__main__":
     print("THINGS ARE RUNNING")
