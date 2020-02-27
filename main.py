@@ -4,9 +4,8 @@ from server.explore_admission_notes import doIT
 from server.explore_admission_notes import predict
 
 app = Flask(__name__, static_folder="react-ui/build/static", template_folder="react-ui/build")
-import sys
 
-model = None
+
 
 @app.route("/")
 def index():
@@ -20,11 +19,12 @@ def hello():
 
 @app.route("/predict")
 def prediction():
-     info = request.headers.get('info')
-     return str(predict(model,info))
+    info = request.headers.get('info')
+    return str(predict(app.MLmodel, info))
 
 
 if __name__ == "__main__":
     model = doIT()
+    app.MLmodel = model
     app.run(host='0.0.0.0', port=5000, threaded=True)
-    #app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
+    # app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
