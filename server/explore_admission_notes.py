@@ -15,7 +15,6 @@ import numpy as np
 # !kill -9 -1
 import pandas as pd
 from nltk import word_tokenize
-nltk.download('punkt')
 import string
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.ensemble import RandomForestClassifier
@@ -23,6 +22,7 @@ from sklearn.metrics import *
 import matplotlib.pyplot as plt
 from sklearn.pipeline import make_pipeline
 import nltk
+nltk.download('punkt')
 from lime.lime_text import LimeTextExplainer
 from joblib import dump, load
 import base64
