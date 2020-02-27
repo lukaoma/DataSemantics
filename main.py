@@ -54,7 +54,7 @@ def sendITs():
 
 @app.route('/help')
 def help():
-    return str(os.getcwd())
+    return str([x[0] for x in os.walk(os.getcwd())])
 
 
 @app.route("/hello")
