@@ -11,6 +11,7 @@ model = None
 def prediction():
     global model
     if model == None:
+    	print("MUST BUILD ML","\n\n\n\n\n\n\n\n\n")
         model = doIT()
     info = request.headers.get('info')
     return str(predict(model, info))
