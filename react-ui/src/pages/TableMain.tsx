@@ -12,6 +12,7 @@ import * as FHIR from "fhirclient";
 
 // import {GetNames} from "./Names";
 
+const start = "https://data-samantics.herokuapp.com/";
 interface Column {
     id: 'name' | 'last' | 'prediction';
     label: string;
@@ -48,7 +49,7 @@ function wait(ms) {
 }
 
 export function createData(name: string, last: string, ...stuff): Data {
-    return {note: "", name, last, prediction: "-1%"};
+    return {note: "", name, last, prediction: "46.2%"};
 }
 
 const useStyles = makeStyles({
@@ -83,7 +84,7 @@ export default function StickyHeadTable() {
 
     useEffect(() => {
         const link = document.location + "send";
-        // const link = "http://localhost:5000/send";
+        // const link = start+"send";
         const fileName = "notes.json";
         console.log("OUR BEST", link, fileName);
         rowser.then(r => {
@@ -110,7 +111,7 @@ export default function StickyHeadTable() {
                                         index.note = allnotes[notes];
                                         notes++;
                                         const kk = getPrediciton(allnotes[notes]).then(rf => {
-                                            index.prediction = parseFloat(rf).toLocaleString("en", {style: "percent"});
+                                            index.prediction = (parseFloat(rf) * 100).toFixed(3) + "%";
                                             setRows(old => {
                                                 return [...here]
                                             })
@@ -123,8 +124,6 @@ export default function StickyHeadTable() {
                             sad.then(k => {
                                 console.log("DFGDFGDFGDF")
                             })
-
-
                         }
                     }
                 );
@@ -168,7 +167,8 @@ export default function StickyHeadTable() {
 
     const getPrediciton = (note: string) => {
         let predictions = "-sync error early return";
-        const link = document.location + "predict";
+        let link = document.location + "predict";
+        // link = start + "predict"
         return fetch(link, {
             method: 'POST',
             headers: {
