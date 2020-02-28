@@ -10,8 +10,10 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import * as FHIR from "fhirclient";
 
+// import {GetNames} from "./Names";
+
 interface Column {
-    id: 'name' | 'last' | 'population' | 'size' | 'density';
+    id: 'name' | 'last' | 'prediction';
     label: string;
     minWidth?: number;
     align?: 'right';
@@ -22,39 +24,31 @@ const columns: Column[] = [
     {id: 'name', label: 'First Name', minWidth: 170},
     {id: 'last', label: 'Last Name', minWidth: 100},
     {
-        id: 'population',
-        label: 'N/A',
+        id: 'prediction',
+        label: 'Readmission',
         minWidth: 170,
         align: 'right',
         format: (value: number) => value.toLocaleString(),
-    },
-    {
-        id: 'size',
-        label: 'N/A',
-        minWidth: 170,
-        align: 'right',
-        format: (value: number) => value.toLocaleString(),
-    },
-    {
-        id: 'density',
-        label: 'N/A',
-        minWidth: 170,
-        align: 'right',
-        format: (value: number) => value.toFixed(2),
     },
 ];
 
-interface Data {
+export interface Data {
     name: string;
     last: string;
-    population: number;
-    size: number;
-    density: number;
+    note: string;
+    prediction: string
 }
 
-function createData(name: string, last: string, population: number, size: number): Data {
-    const density = population / size;
-    return {name, last, population, size, density};
+function wait(ms) {
+    var start = new Date().getTime();
+    var end = start;
+    while (end < start + ms) {
+        end = new Date().getTime();
+    }
+}
+
+export function createData(name: string, last: string, ...stuff): Data {
+    return {note: "", name, last, prediction: "-1%"};
 }
 
 const useStyles = makeStyles({
@@ -72,65 +66,121 @@ export default function StickyHeadTable() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const [rows, setRows] = useState([
-        createData('India', 'IN', 1324171354, 3287263),
-        createData('China', 'CN', 1403500365, 9596961),
-        createData('Italy', 'IT', 60483973, 301340),
-        createData('United States', 'US', 327167434, 9833520),
-        createData('Canada', 'CA', 37602103, 9984670),
-        createData('Australia', 'AU', 25475400, 7692024),
-        createData('Germany', 'DE', 83019200, 357578),
-        createData('Ireland', 'IE', 4857000, 70273),
-        createData('Mexico', 'MX', 126577691, 1972550),
-        createData('Japan', 'JP', 126317000, 377973),
-        createData('France', 'FR', 67022000, 640679),
-        createData('United Kingdom', 'GB', 67545757, 242495),
-        createData('Russia', 'RU', 146793744, 17098246),
-        createData('Nigeria', 'NG', 200962417, 923768),
-        createData('Brazil', 'BR', 210147125, 8515767),
+        createData('Joshua', 'Williams', 1324171354, 3287263),
+        createData('Felecia', 'Wolf', 1403500365, 9596961),
+        createData('Maryln', 'Wisozk', 60483973, 301340),
+        createData('Jules', 'Wuckert', 327167434, 9833520),
+        createData('Mechelle', 'Trantow', 37602103, 9984670),
     ]);
 
-    // function abunch(){
-    //     const all = [];
-    //     for (let count=0; count <1000; count++) {
-    //         all.push(createData('Brazil', 'BR', 210147125, 8515767))
-    //     }
-    //     return all;
-    // }
+    // add names thanks :)
 
-    const client = FHIR.client("https://r3.smarthealthit.org");
+    const rowser =
+        new Promise(function (resolve, reject) {
+            resolve()
+        });
+
+
     useEffect(() => {
+        const link = document.location + "send";
+        // const link = "http://localhost:5000/send";
+        const fileName = "notes.json";
+        console.log("OUR BEST", link, fileName);
+        rowser.then(r => {
+                // console.log((r as []).length)
+                fetch(link, {
+                    headers: {
+                        'fileName': fileName
+                    }
+                }).then(r => {
+                    return r.json()
+                }).then((resp) => {
+                        if (resp != null) {
+                            const data: HealthData = resp;
+                            //update table
+                            let allnotes: string[] = [];
+                            for (let eachPerson of data.entry) {
+                                allnotes.push(eachPerson.resource.content[0].attachment.data)
+                            }
+                            const sad = new Promise(function (resolve, reject) {
+                                setRows(old => {
+                                    const here = old;
+                                    let notes = 0;
+                                    for (let index of here) {
+                                        index.note = allnotes[notes];
+                                        notes++;
+                                        const kk = getPrediciton(allnotes[notes]).then(rf => {
+                                            index.prediction = parseFloat(rf).toLocaleString("en", {style: "percent"});
+                                            setRows(old => {
+                                                return [...here]
+                                            })
+                                        });
+                                    }
+                                    return [...here]
+                                });
+                                resolve()
+                            });
+                            sad.then(k => {
+                                console.log("DFGDFGDFGDF")
+                            })
+
+
+                        }
+                    }
+                );
+            }
+        )
+    }, []);
+
+
+    function GetNames(): Data[] {
+        let allRows: Data[] = [];
+        const client = FHIR.client("https://r3.smarthealthit.org");
         client.request("/Patient", {pageLimit: 1}).then((r: any) => {
             const apiResponse: Response = r;
-            console.log(apiResponse);
             //update table
-            let allRows: Data[] = [];
             if (apiResponse.entry === undefined) {
                 const lotsApi: Response[] = r;
                 for (let eachResponse of lotsApi) {
-                    allRows.push(...buildNewRows(eachResponse.entry))
+                    allRows.push(...buildNewRows(eachResponse.entry));
+                    setRows(old => {
+                        console.log("" + allRows + "");
+                        return [...allRows]
+                    })
                 }
             } else {
                 allRows.push(...buildNewRows(apiResponse.entry))
             }
-            //no duplicates lol
-            // const fix = (names:Data[]) => names.filter((v,i) => names.indexOf(v) === i);
-            // const cleanData = fix(allRows);
-            setRows((old) => {
-                return [...allRows]
-            });
         });
-    }, []);
+        return allRows
+    }
+
 
     function buildNewRows(listRows: Entry[]): Data[] {
         const newRows: Data[] = [];
         for (let person of listRows) {
             const firstName = person.resource.name[0].given[0];
             const lastName = person.resource.name[0].family;
-            newRows.push(createData(firstName, lastName, -1, -1))
+            newRows.push(createData(firstName, lastName))
         }
         return newRows;
     }
 
+    const getPrediciton = (note: string) => {
+        let predictions = "-sync error early return";
+        const link = document.location + "predict";
+        return fetch(link, {
+            method: 'POST',
+            headers: {
+                'info': note
+            },
+            body: note
+        }).then(r => r.text()).then(prediction => {
+            predictions = prediction;
+            console.log("PREDICT", prediction);
+            return prediction
+        });
+    };
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage);
@@ -188,6 +238,67 @@ export default function StickyHeadTable() {
         </Paper>
     );
 }
+
+export interface HealthData {
+    resourceType?: string;
+    id?: string;
+    type?: string;
+    timestamp?: Date;
+    entry?: Entry[];
+}
+
+export interface Entry {
+    resource?: Resource;
+}
+
+export interface Resource {
+    resourceType?: string;
+    id?: string;
+    status?: string;
+    type?: Type;
+    category?: Category[];
+    content?: Content[];
+    subject?: Subject;
+    context?: Context;
+    author?: Subject[];
+}
+
+export interface Subject {
+    reference?: string;
+}
+
+export interface Category {
+    coding?: CategoryCoding[];
+}
+
+export interface CategoryCoding {
+    system?: string;
+    code?: string;
+}
+
+export interface Content {
+    attachment?: Attachment;
+}
+
+export interface Attachment {
+    contentType?: string;
+    data?: string;
+}
+
+export interface Context {
+    encounter?: Subject[];
+}
+
+export interface Type {
+    coding?: TypeCoding[];
+}
+
+export interface TypeCoding {
+    system?: string;
+    code?: string;
+    display?: string;
+}
+
 
 export interface Response {
     resourceType?: string;
@@ -334,3 +445,5 @@ export interface Link {
 export interface WelcomeMeta {
     lastUpdated?: Date;
 }
+
+
