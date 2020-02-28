@@ -154,7 +154,6 @@ export default function StickyHeadTable() {
         return allRows
     }
 
-
     function buildNewRows(listRows: Entry[]): Data[] {
         const newRows: Data[] = [];
         for (let person of listRows) {
