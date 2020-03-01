@@ -11,6 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 import {GetNames} from "./Names";
 import axios, {AxiosRequestConfig} from 'axios';
 import {Observable, Observer} from "rxjs";
+import {take} from "rxjs/operators";
 
 interface Column {
     id: 'name' | 'last' | 'prediction';
@@ -67,7 +68,7 @@ export default function StickyHeadTable() {
     // add names thanks :)
 
     useEffect(() => {
-        let subscriptionNames = GetNames().subscribe({
+        GetNames().pipe(take(6)).subscribe({
             next: data => setRows(old => {
                 return [...old, data]
             }),
@@ -99,12 +100,12 @@ export default function StickyHeadTable() {
     }
 
     function makePredict(notes: string) {
-        let subscriptionPrediction = getPrediction(notes).subscribe({
+        getPrediction(notes).subscribe({
             next: data => setRows(old => {
                 console.log("data", data);
-                let precent = (parseFloat(data) * 100).toFixed(3) + "%";
+                let precent = (parseFloat(data) * 100).toFixed(1) + "%";
                 for (let data of old) {
-                    if (data.note == "") {
+                    if (data.note === "") {
                         data.note = notes;
                         data.prediction = precent;
                         break;
