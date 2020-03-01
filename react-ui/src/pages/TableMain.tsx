@@ -8,11 +8,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import * as FHIR from "fhirclient";
+import {GetNames} from "./Names";
+import axios, {AxiosRequestConfig} from 'axios';
+import {Observable, Observer} from "rxjs";
 
-// import {GetNames} from "./Names";
-
-const start = "https://data-samantics.herokuapp.com/";
 interface Column {
     id: 'name' | 'last' | 'prediction';
     label: string;
@@ -40,14 +39,6 @@ export interface Data {
     prediction: string
 }
 
-function wait(ms) {
-    var start = new Date().getTime();
-    var end = start;
-    while (end < start + ms) {
-        end = new Date().getTime();
-    }
-}
-
 export function createData(name: string, last: string, ...stuff): Data {
     return {note: "", name, last, prediction: "46.2%"};
 }
@@ -67,118 +58,76 @@ export default function StickyHeadTable() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const [rows, setRows] = useState([
-        createData('Joshua', 'Williams', 1324171354, 3287263),
-        createData('Felecia', 'Wolf', 1403500365, 9596961),
-        createData('Maryln', 'Wisozk', 60483973, 301340),
-        createData('Jules', 'Wuckert', 327167434, 9833520),
-        createData('Mechelle', 'Trantow', 37602103, 9984670),
+        // createData('Felecia', 'Wolf', 1403500365, 9596961),
+        // createData('Maryln', 'Wisozk', 60483973, 301340),
+        // createData('Jules', 'Wuckert', 327167434, 9833520),
+        // createData('Mechelle', 'Trantow', 37602103, 9984670),
     ]);
 
     // add names thanks :)
 
-    const rowser =
-        new Promise(function (resolve, reject) {
-            resolve()
-        });
-
-
     useEffect(() => {
-        const link = document.location + "send";
-        // const link = start+"send";
-        const fileName = "notes.json";
-        console.log("OUR BEST", link, fileName);
-        rowser.then(r => {
-                // console.log((r as []).length)
-                fetch(link, {
-                    headers: {
-                        'fileName': fileName
-                    }
-                }).then(r => {
-                    return r.json()
-                }).then((resp) => {
-                        if (resp != null) {
-                            const data: HealthData = resp;
-                            //update table
-                            let allnotes: string[] = [];
-                            for (let eachPerson of data.entry) {
-                                allnotes.push(eachPerson.resource.content[0].attachment.data)
-                            }
-                            const sad = new Promise(function (resolve, reject) {
-                                setRows(old => {
-                                    const here = old;
-                                    let notes = 0;
-                                    for (let index of here) {
-                                        index.note = allnotes[notes];
-                                        notes++;
-                                        const kk = getPrediciton(allnotes[notes]).then(rf => {
-                                            index.prediction = (parseFloat(rf) * 100).toFixed(3) + "%";
-                                            setRows(old => {
-                                                return [...here]
-                                            })
-                                        });
-                                    }
-                                    return [...here]
-                                });
-                                resolve()
-                            });
-                            sad.then(k => {
-                                console.log("DFGDFGDFGDF")
-                            })
-                        }
-                    }
-                );
-            }
-        )
+        let subscriptionNames = GetNames().subscribe({
+            next: data => setRows(old => {
+                return [...old, data]
+            }),
+            complete: () => addPrediction().subscribe({
+                next: data => makePredict(data)
+            }),
+        });
     }, []);
 
+    const notesGET: AxiosRequestConfig = {
+        method: 'GET',
+        url: document.location + "send",
+        headers: {
+            'fileName': "notes.json"
+        },
+    };
 
-    function GetNames(): Data[] {
-        let allRows: Data[] = [];
-        const client = FHIR.client("https://r3.smarthealthit.org");
-        client.request("/Patient", {pageLimit: 1}).then((r: any) => {
-            const apiResponse: Response = r;
-            //update table
-            if (apiResponse.entry === undefined) {
-                const lotsApi: Response[] = r;
-                for (let eachResponse of lotsApi) {
-                    allRows.push(...buildNewRows(eachResponse.entry));
-                    setRows(old => {
-                        console.log("" + allRows + "");
-                        return [...allRows]
-                    })
+    function addPrediction(): Observable<string> {
+        return new Observable((observe: Observer<string>) => {
+            axios(notesGET).then((resp) => {
+                const data: HealthData = resp.data;
+                //update table
+                for (let eachPerson of data.entry) {
+                    const note = eachPerson.resource.content[0].attachment.data;
+                    observe.next(note)
                 }
-            } else {
-                allRows.push(...buildNewRows(apiResponse.entry))
-            }
+            });
         });
-        return allRows
     }
 
-    function buildNewRows(listRows: Entry[]): Data[] {
-        const newRows: Data[] = [];
-        for (let person of listRows) {
-            const firstName = person.resource.name[0].given[0];
-            const lastName = person.resource.name[0].family;
-            newRows.push(createData(firstName, lastName))
-        }
-        return newRows;
+    function makePredict(notes: string) {
+        let subscriptionPrediction = getPrediction(notes).subscribe({
+            next: data => setRows(old => {
+                console.log("data", data);
+                let precent = (parseFloat(data) * 100).toFixed(3) + "%";
+                for (let data of old) {
+                    if (data.note == "") {
+                        data.note = notes;
+                        data.prediction = precent;
+                        break;
+                    }
+                }
+                return [...old]
+            })
+        })
     }
 
-    const getPrediciton = (note: string) => {
-        let predictions = "-sync error early return";
-        let link = document.location + "predict";
-        // link = start + "predict"
-        return fetch(link, {
+    const getPrediction = (note: string): Observable<string> => {
+        const predictionPost: AxiosRequestConfig = {
             method: 'POST',
-            headers: {
-                'info': note
-            },
-            body: note
-        }).then(r => r.text()).then(prediction => {
-            predictions = prediction;
-            console.log("PREDICT", prediction);
-            return prediction
+            url: document.location + "predict",
+            data: {note}
+        };
+        const predit = new Observable((observe: Observer<string>) => {
+            axios(predictionPost).then(res => {
+                console.log(res.data);
+                observe.next(res.data)
+            });
         });
+        return predit
     };
 
     const handleChangePage = (event: unknown, newPage: number) => {
@@ -297,152 +246,3 @@ export interface TypeCoding {
     code?: string;
     display?: string;
 }
-
-
-export interface Response {
-    resourceType?: string;
-    id?: string;
-    meta?: WelcomeMeta;
-    type?: string;
-    total?: number;
-    link?: Link[];
-    entry?: Entry[];
-}
-
-export interface Entry {
-    fullURL?: string;
-    resource?: Resource;
-    search?: Search;
-}
-
-export interface Resource {
-    resourceType?: string;
-    id?: string;
-    meta?: ResourceMeta;
-    text?: Text;
-    identifier?: Identifier[];
-    active?: boolean;
-    name?: Name[];
-    telecom?: Identifier[];
-    gender?: string;
-    birthDate?: Date;
-    address?: Address[];
-    generalPractitioner?: GeneralPractitioner[];
-    extension?: ResourceExtension[];
-    maritalStatus?: MaritalStatus;
-    multipleBirthBoolean?: boolean;
-    communication?: Communication[];
-}
-
-export interface Address {
-    use?: string;
-    line?: string[];
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    country?: string;
-    extension?: AddressExtension[];
-}
-
-export interface AddressExtension {
-    url?: string;
-    extension?: ExtensionExtension[];
-}
-
-export interface ExtensionExtension {
-    url?: string;
-    valueDecimal?: number;
-}
-
-export interface Communication {
-    language?: Language;
-}
-
-export interface Language {
-    coding?: LanguageCoding[];
-}
-
-export interface LanguageCoding {
-    system?: string;
-    code?: string;
-    display?: string;
-}
-
-export interface ResourceExtension {
-    url?: string;
-    valueCodeableConcept?: ValueCodeableConcept;
-    valueAddress?: ValueAddress;
-    valueString?: string;
-    valueCode?: string;
-    valueBoolean?: boolean;
-    valueHumanName?: ValueHumanName;
-}
-
-export interface ValueAddress {
-    city?: string;
-    state?: string;
-    country?: string;
-}
-
-export interface ValueCodeableConcept {
-    coding?: LanguageCoding[];
-    text?: string;
-}
-
-export interface ValueHumanName {
-    text?: string;
-}
-
-export interface GeneralPractitioner {
-    reference?: string;
-}
-
-export interface Identifier {
-    use?: string;
-    type?: ValueCodeableConcept;
-    system?: string;
-    value?: string;
-}
-
-export interface MaritalStatus {
-    coding?: TagElement[];
-    text?: string;
-}
-
-export interface TagElement {
-    system?: string;
-    code?: string;
-}
-
-export interface ResourceMeta {
-    versionID?: string;
-    lastUpdated?: Date;
-    tag?: TagElement[];
-    profile?: string[];
-}
-
-export interface Name {
-    use?: string;
-    family?: string;
-    given?: string[];
-}
-
-export interface Text {
-    status?: string;
-    div?: string;
-}
-
-export interface Search {
-    mode?: string;
-}
-
-export interface Link {
-    relation?: string;
-    url?: string;
-}
-
-export interface WelcomeMeta {
-    lastUpdated?: Date;
-}
-
-

@@ -1,8 +1,8 @@
 FROM ubuntu:latest
 RUN apt-get update -y
-RUN apt-get install -y python-pip python-dev build-essential
-COPY . /DataDock
-WORKDIR /Datadock
-RUN pip install -r requirements.txt
-ENTRYPOINT ["python"]
+RUN apt-get install -y python3-pip python3-dev build-essential
+ADD . .
+WORKDIR .
+RUN pip3 install -r requirements.txt
+ENTRYPOINT ["python3"]
 CMD ["main.py"]

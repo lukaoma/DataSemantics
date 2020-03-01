@@ -1,34 +1,36 @@
 import * as FHIR from "fhirclient";
 import {createData, Data} from "./TableMain";
+import {Observable, Observer} from "rxjs";
 
 
-export function GetNames(): Data[] {
-    let allRows: Data[] = [];
-    const client = FHIR.client("https://r3.smarthealthit.org");
-    client.request("/Patient", {pageLimit: 1}).then((r: any) => {
-        const apiResponse: Response = r;
-        //update table
-        if (apiResponse.entry === undefined) {
-            const lotsApi: Response[] = r;
-            for (let eachResponse of lotsApi) {
-                allRows.push(...buildNewRows(eachResponse.entry));
+export function GetNames(): Observable<Data> {
+    const nameData = new Observable((serve: Observer<Data>) => {
+        const client = FHIR.client("https://r3.smarthealthit.org");
+        client.request("/Patient", {pageLimit: 1}).then((r: any) => {
+            const apiResponse: Response = r;
+            //update table
+            if (apiResponse.entry === undefined) {
+                const lotsApi: Response[] = r;
+                for (let eachResponse of lotsApi) {
+                    buildNewRows(eachResponse.entry, serve)
+                }
+            } else {
+                buildNewRows(apiResponse.entry, serve)
             }
-        } else {
-            allRows.push(...buildNewRows(apiResponse.entry))
-        }
+        }).then(r => {
+            serve.complete()
+        });
     });
-    return allRows
+    return nameData
 }
 
 
-function buildNewRows(listRows: Entry[]): Data[] {
-    const newRows: Data[] = [];
+function buildNewRows(listRows: Entry[], serve: any) {
     for (let person of listRows) {
         const firstName = person.resource.name[0].given[0];
         const lastName = person.resource.name[0].family;
-        newRows.push(createData(firstName, lastName))
+        serve.next(createData(firstName, lastName));
     }
-    return newRows;
 }
 
 
