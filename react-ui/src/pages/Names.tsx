@@ -53,10 +53,13 @@ export function GetNames(): Observable<Data> {
 
 
 function buildNewRows(listRows: Entry[], serve: any) {
+
     for (let person of listRows) {
-        const firstName = person.resource.name[0].given[0];
-        const lastName = person.resource.name[0].family;
-        serve.next(createData(firstName, lastName));
+        if (person.resource.name !== undefined) {
+            const firstName = person.resource.name[0].given[0];
+            const lastName = person.resource.name[0].family;
+            serve.next(createData(firstName, lastName));
+        }
     }
 }
 
