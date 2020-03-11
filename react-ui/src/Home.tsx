@@ -2,6 +2,7 @@ import React from 'react';
 import TableMain from "./pages/TableMain";
 import Favicon from 'react-favicon';
 import logo from "./images/icon.png"
+import Ethnicity from "./pages/ethnicity";
 
 
 export default function HomePage(props: any) {
@@ -30,6 +31,7 @@ export default function HomePage(props: any) {
             </h1>
             {/*<h1 id="chill">HER</h1>*/}
             <TableMain/>
+            <Ethnicity/>
             {/*<h3 style={{color: "blue"}}>Welcome to Traffic Camera Analytics Page<br/>*/}
             {/*    Click <a href="##" style={{textDecoration: "underline"}} onClick={showTable}>​here​</a> to see details*/}
             {/*    about Traffic Cameras in Austin Metro Area.</h3>*/}

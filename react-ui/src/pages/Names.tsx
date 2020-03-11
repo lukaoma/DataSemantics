@@ -2,6 +2,33 @@ import * as FHIR from "fhirclient";
 import {createData, Data} from "./TableMain";
 import {Observable, Observer} from "rxjs";
 
+export function GetPacients(): Observable<Entry> {
+    const nameData = new Observable((serve: Observer<Entry>) => {
+        const client = FHIR.client("https://r3.smarthealthit.org");
+        client.request("/Patient", {pageLimit: 1}).then((r: any) => {
+            const apiResponse: Response = r;
+            //update table
+            if (apiResponse.entry === undefined) {
+                const lotsApi: Response[] = r;
+                for (let eachResponse of lotsApi) {
+                    getPeople(eachResponse.entry, serve)
+                }
+            } else {
+                getPeople(apiResponse.entry, serve)
+            }
+        }).then(r => {
+            serve.complete()
+        });
+    });
+    return nameData
+}
+
+
+function getPeople(listpeople: Entry[], serve: any) {
+    for (let person of listpeople) {
+        serve.next(person);
+    }
+}
 
 export function GetNames(): Observable<Data> {
     const nameData = new Observable((serve: Observer<Data>) => {
