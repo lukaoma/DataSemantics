@@ -78,8 +78,8 @@ export default function Condition() {
     return (
         <ReactFusioncharts
             type="bar3d"
-            width="100%"
-            height="100%"
+            width="85%"
+            height="80%"
             dataFormat="JSON"
             dataSource={conditions}
         />

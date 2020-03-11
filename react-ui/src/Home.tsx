@@ -27,7 +27,9 @@ export default function HomePage(props: any) {
     return (
         <div>
             <Favicon url={logo}/>
-            <h1>Data Semantics<br/>
+            <br/>
+            <h1>Hospital Readmission, Data Semantics<br/>
+                <h3>Larry Ukaoma & Oliver Lu</h3>
                 <br/>
             </h1>
             {/*<h1 id="chill">HER</h1>*/}
