@@ -12,12 +12,12 @@ export default function Ethnicity() {
     const [races, setRaces] = useState({
         chart: {
             caption: "Ethnicity of Patients",
-            plottooltext: "<b>$percentValue</b> of of population is $label",
+            plottooltext: "<b>$percentValue</b> of population is $label",
             showlegend: "1",
             showpercentvalues: "1",
             legendposition: "bottom",
             usedataplotcolorforlabels: "1",
-            theme: "gammel"
+            theme: "umber"
         },
         data: [{
             label: "White",
@@ -33,7 +33,7 @@ export default function Ethnicity() {
                 console.log();
                 if (data.resource.extension !== undefined) {
                     const currentEthnicity: string = data.resource.extension[0].valueCodeableConcept.coding[0].display;
-                    const found = newData.data.find(ele => ele.label == currentEthnicity);
+                    const found = newData.data.find(ele => ele.label === currentEthnicity);
                     if (found !== undefined) {
                         found.value = (parseInt(found.value) + 1) + ""
                     } else {
@@ -50,9 +50,9 @@ export default function Ethnicity() {
 
     return (
         <ReactFusioncharts
-            type="pie2d"
+            type="pie3d"
             width="100%"
-            height="100%"
+            height="150%"
             dataFormat="JSON"
             dataSource={races}
         />
