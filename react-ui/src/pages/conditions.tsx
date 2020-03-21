@@ -5,7 +5,7 @@ import React, {useEffect, useState} from "react";
 import {Observable, Observer} from "rxjs";
 import * as FHIR from "fhirclient";
 
-// Resolves charts dependancy
+// Resolves charts dependancy for visuals
 charts(FusionCharts);
 
 export function GetPacients(): Observable<Entry> {
