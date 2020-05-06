@@ -55,7 +55,7 @@ export default function Ethnicity() {
 
     return (
         <ReactFusioncharts
-            type="pie3d"
+            type="pie2d"
             width="100%"
             height="150%"
             dataFormat="JSON"

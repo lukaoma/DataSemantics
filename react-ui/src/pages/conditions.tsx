@@ -1,17 +1,18 @@
-import FusionCharts from "fusioncharts";
-import charts from "fusioncharts/fusioncharts.charts";
-import ReactFusioncharts from "react-fusioncharts";
-import React, {useEffect, useState} from "react";
-import {Observable, Observer} from "rxjs";
-import * as FHIR from "fhirclient";
+import * as FHIR                    from 'fhirclient';
+import FusionCharts                 from 'fusioncharts';
+import charts                       from 'fusioncharts/fusioncharts.charts';
+import React, {useEffect, useState} from 'react';
+import ReactFusioncharts            from 'react-fusioncharts';
+import {Observable, Observer}       from 'rxjs';
+
 
 // Resolves charts dependancy for visuals
 charts(FusionCharts);
 
 export function GetPacients(): Observable<Entry> {
     const nameData = new Observable((serve: Observer<Entry>) => {
-        const client = FHIR.client("https://r3.smarthealthit.org");
-        client.request("/Condition", {pageLimit: 5}).then((r: any) => {
+        const client = FHIR.client('https://r3.smarthealthit.org');
+        client.request('/Condition', {pageLimit: 5}).then((r: any) => {
             const apiResponse: ConditionResponse = r;
             //update table
             if (apiResponse.entry === undefined) {
@@ -77,7 +78,7 @@ export default function Condition() {
 
     return (
         <ReactFusioncharts
-            type="bar3d"
+            type="column2d"
             width="85%"
             height="80%"
             dataFormat="JSON"
