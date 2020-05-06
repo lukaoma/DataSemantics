@@ -1,9 +1,10 @@
-import React from 'react';
-import TableMain from "./pages/TableMain";
-import Favicon from 'react-favicon';
-import logo from "./images/icon.png"
-import Ethnicity from "./pages/ethnicity";
-import Condition from "./pages/conditions";
+import React     from 'react';
+import Favicon   from 'react-favicon';
+import logo      from './images/icon.png';
+import Condition from './pages/conditions';
+import Ethnicity from './pages/ethnicity';
+import InputNote from './pages/inputNote';
+import TableMain from './pages/TableMain';
 
 
 export default function HomePage(props: any) {
@@ -26,20 +27,21 @@ export default function HomePage(props: any) {
 
     return (
         <div>
-            <Favicon url={logo}/>
-            <br/>
-            <h1>Hospital Readmission, Data Semantics<br/>
-                <h3>Larry Ukaoma & Oliver Lu </h3>
+            <div>
+                <Favicon url={logo}/>
                 <br/>
-            </h1>
-            {/*<h1 id="chill">HER</h1>*/}
-            <TableMain/>
-            <Ethnicity/>
-            <Condition/>
-            {/*<h3 style={{color: "blue"}}>Welcome to Traffic Camera Analytics Page<br/>*/}
-            {/*    Click <a href="##" style={{textDecoration: "underline"}} onClick={showTable}>​here​</a> to see details*/}
-            {/*    about Traffic Cameras in Austin Metro Area.</h3>*/}
-            {/*<TableMain useRe={refs}/>*/}
+                <h1>Hospital Readmission, Data Semantics<br/>
+                    <h3>Larry Ukaoma & Oliver Lu </h3>
+                    <br/>
+                </h1>
+                <>
+                    <InputNote/>
+                </>
+                <TableMain/>
+                <Ethnicity/>
+                <Condition/>
+            </div>
+
         </div>
     );
 }

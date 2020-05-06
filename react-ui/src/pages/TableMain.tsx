@@ -1,17 +1,17 @@
+import Paper                        from '@material-ui/core/Paper';
+import {makeStyles}                 from '@material-ui/core/styles';
+import Table                        from '@material-ui/core/Table';
+import TableBody                    from '@material-ui/core/TableBody';
+import TableCell                    from '@material-ui/core/TableCell';
+import TableContainer               from '@material-ui/core/TableContainer';
+import TableHead                    from '@material-ui/core/TableHead';
+import TablePagination              from '@material-ui/core/TablePagination';
+import TableRow                     from '@material-ui/core/TableRow';
+import axios, {AxiosRequestConfig}  from 'axios';
 import React, {useEffect, useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import {GetNames} from "./Names";
-import axios, {AxiosRequestConfig} from 'axios';
-import {Observable, Observer} from "rxjs";
-import {take} from "rxjs/operators";
+import {Observable, Observer}       from 'rxjs';
+import {take}                       from 'rxjs/operators';
+import {GetNames}                   from './Names';
 
 interface Column {
     id: 'name' | 'last' | 'prediction';
@@ -102,12 +102,11 @@ export default function StickyHeadTable() {
     function makePredict(notes: string) {
         getPrediction(notes).subscribe({
             next: data => setRows(old => {
-                console.log("data", data);
-                let precent = (parseFloat(data) * 100).toFixed(1) + "%";
+                let percent = (parseFloat(data) * 100).toFixed(1) + '%';
                 for (let data of old) {
                     if (data.note === "") {
                         data.note = notes;
-                        data.prediction = precent;
+                        data.prediction = percent;
                         break;
                     }
                 }
