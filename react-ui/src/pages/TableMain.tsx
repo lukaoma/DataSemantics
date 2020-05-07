@@ -189,7 +189,7 @@ export default function StickyHeadTable() {
                                             return (
                                                 <TableCell key={column.id} align={column.align} onClick={() => {
                                                     displayNote(row.note);
-                                                }}>>
+                                                }}>
                                                     {column.format && typeof value === 'number' ? column.format(value) : value}
                                                 </TableCell>
                                             );
