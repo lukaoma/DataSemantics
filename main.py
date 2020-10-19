@@ -21,11 +21,10 @@ def prediction():
     info = json.loads(request.data)["note"]
     return str(predict(model, info))
 
-
-@app.route("/")
-def index():
-    return render_template("index.html")
-
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def index(path):
+  return render_template("index.html")
 
 @app.route('/send')
 def send():

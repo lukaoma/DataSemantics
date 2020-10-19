@@ -24,15 +24,15 @@ interface Column {
 }
 
 const columns: Column[] = [
-    {id: 'name', label: 'First Name', minWidth: 170},
-    {id: 'last', label: 'Last Name', minWidth: 100},
-    {
-        id: 'prediction',
-        label: 'Readmission',
-        minWidth: 170,
-        align: 'right',
-        format: (value: number) => value.toLocaleString(),
-    },
+	{id: 'name', label: 'First Larry Name', minWidth: 170},
+	{id: 'last', label: 'Last Name', minWidth: 100},
+	{
+		id: 'prediction',
+		label: 'Readmission',
+		minWidth: 170,
+		align: 'right',
+		format: (value: number) => value.toLocaleString(),
+	},
 ];
 
 export interface Data {
