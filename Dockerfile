@@ -6,7 +6,7 @@ FROM nikolaik/python-nodejs
 
 RUN ls && pwd
 
-RUN git clone git@github.com:lukaoma/DataSemantics.git
+RUN git clone https://github.com/lukaoma/DataSemantics.git
 RUN ls && pwd
 
 WORKDIR /DataSemantics

@@ -1,8 +1,12 @@
 /server/server/
+/server/.idea
 /oldprod/
 /node_modules/
 /server/NOTEEVENTS.csv.gz
 server/ADMISSIONS.csv.gz
+yarn.lock
+.idea
+Final Project Data Semantics.zip
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
@@ -10,6 +14,7 @@ server/ADMISSIONS.csv.gz
 react-ui/node_modules
 react-ui/.pnp
 react-ui/.pnp.js
+react-ui/yarn.lock
 
 # testing
 react-ui/coverage
